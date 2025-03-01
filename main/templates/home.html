@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <style>
+        body {
+            font-family: Object Sans, sans-serif;
+            background-color: white;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+        }
+        .logo img {
+            height: 60px;
+        }
+        .nav {
+            display: flex;
+            gap: 20px;
+            margin: auto;
+        }
+        .nav a {
+            text-decoration: none;
+            color: darkgray;
+            font-size: 18px;
+            transition: color 0.3s ease-in-out;
+        }
+        .nav a:hover {
+            color: red;
+        }
+        .login-btn {
+            background-color: red;
+            color: white;
+            padding: 8px 20px;
+            border: 2px solid red;
+            border-radius: 20px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+            margin-right: 50px;
+        }
+        .login-btn:hover {
+            background-color: transparent;
+            color: black;
+        }
+
+        .card-popup {
+            width: 1000px; /* Устанавливаем фиксированную ширину */
+            height: 750px; /* Устанавливаем фиксированную высоту */
+            opacity: 0; /* Начальная прозрачность, скрыта */
+            transform: translateY(0) scale(0); /* Скрыто */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            position: absolute; /* Абсолютное позиционирование */
+            top: 100%; /* Делаем карту скрытой до появления секции контактов */
+            left: 50%; /* Центрируем по горизонтали */
+            transform: translate(-50%, -50%) scale(0); /* Сдвигаем в центр */
+            z-index: 2; /* Убедимся, что карта будет над пузырями */
+            display: flex; /* Делаем контейнер для карты flex */
+            flex-direction: column; /* Размещение элементов по вертикали */
+            justify-content: center; /* Центрируем кнопку по вертикали */
+            align-items: center; /* Центрируем кнопку по горизонтали */
+        }
+
+        .card-btn {
+            display: inline-block;
+            background-color: red;
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            margin-top: 10px;
+            text-decoration: none;
+            border-radius: 20px;
+            border: 2px solid red;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card-btn:hover {
+            background-color: transparent;
+            color: black;
+        }
+
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 200vh;
+            overflow: hidden;
+            background-color: white;
+            z-index: 1; /* Пузыри будут под картой */
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+        }
+
+        .bubble.large {
+            width: 150px;
+            height: 150px;
+        }
+
+        .bubble.medium {
+            width: 120px;
+            height: 120px;
+        }
+
+        .bubble.small {
+            width: 100px;
+            height: 100px;
+        }
+
+        .bubble.top-left { top: 5%; left: 5%; }
+        .bubble.top-right { top: 5%; right: 5%; }
+        .bubble.bottom-left { bottom: 5%; left: 10%; }
+        .bubble.bottom-right { bottom: 5%; right: 10%; }
+        .bubble.left { top: 20%; left: 0%; transform: translateY(-20%); }
+        .bubble.right { top: 60%; right: 0%; transform: translateY(-60%); }
+        .bubble.random-1 { top: 20%; left: 25%; }
+        .bubble.random-2 { top: 40%; left: 35%; }
+        .bubble.random-3 { top: 60%; left: 45%; }
+        .bubble.random-4 { top: 80%; left: 55%; }
+        .bubble.random-5 { top: 25%; left: 75%; }
+        .bubble.random-6 { top: 50%; left: 85%; }
+        .bubble.random-7 { bottom: 15%; left: 15%; }
+        .bubble.random-8 { bottom: 40%; left: 50%; }
+
+        #map-section {
+            height: 500px;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding-top: 100px;
+        }
+        #reviews-section {
+            height: 500px;
+            background-color: #e0e0e0;
+            text-align: center;
+            padding-top: 60%;
+        }
+        #contact-section {
+            height: 500px;
+            background-color: #d0d0d0;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        /* Текст с отступами */
+        .intro-text {
+            position: relative;
+            width: 70%;
+            margin: 50px auto;
+            padding: 20px;
+            font-size: 18px;
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            color: black;
+            z-index: 1;
+            transform: translateX(-10%);
+        }
+
+        .intro-text p:first-letter {
+            color: red;
+            font-size: 2em;
+        }
+
+        .footer {
+            background-color: lightgray;
+            padding: 20px 40px;
+            text-align: center;
+            margin-top: 5%;
+            color: darkgray !important;
+            font-size: 16px;
+        }
+
+        .footer p {
+           padding: 20px 40px;
+           color: darkgray !important;
+           font-size: 16px;
+        }
+        .content-wrapper {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+    <div class="logo">
+        {% if logo %}
+            <img src="{{ logo.image.url }}" alt="Логотип">
+        {% else %}
+            <img src="/media/logos/default.png" alt="Логотип">
+        {% endif %}
+    </div>
+    <nav class="nav">
+        <a href="#">Главная</a>
+        <a href="#" onclick="scrollToSection('reviews-section'); return false;">Открыть карту</a>
+        <a href="main/templates/wallet.html">Открыть счет</a> <!-- Ссылка на страницу "wallet.html" -->
+        <a href="#" onclick="scrollToSection('reviews-section'); return false;">Отзывы</a>
+        <a href="#" onclick="scrollToSection('contact-section'); return false;">Контакты</a>
+    </nav>
+    <a href="main/templates/login.html" class="login-btn">Войти</a> <!-- Ссылка на страницу "login.html" -->
+    </header>
+
+
+    <div class="content-wrapper">
+        <div class="bubbles">
+            <div class="bubble large top-left"></div>
+            <div class="bubble medium top-right"></div>
+            <div class="bubble large bottom-left"></div>
+            <div class="bubble small bottom-right"></div>
+            <div class="bubble medium left"></div>
+            <div class="bubble large right"></div>
+            <div class="bubble medium random-1"></div>
+            <div class="bubble large random-2"></div>
+            <div class="bubble small random-3"></div>
+            <div class="bubble large random-4"></div>
+            <div class="bubble medium random-5"></div>
+            <div class="bubble small random-6"></div>
+            <div class="bubble large random-7"></div>
+            <div class="bubble medium random-8"></div>
+        </div>
+
+        <section id="map-section">
+            <div class="intro-text">
+                <p><span>Б</span>анк предоставляет инновационные решения для вашего бизнеса и личных финансов. Мы гордимся надежностью наших продуктов и предлагаем широкий спектр услуг для разных нужд. Благодаря нашей гибкой системе обслуживания и привлекательным условиям, мы стремимся быть вашим надежным партнером в сфере финансов.</p>
+            </div>
+            <h2>Карта</h2>
+        </section>
+
+        <section id="reviews-section">
+            <h2>Отзывы</h2>
+            <p>Содержимое секции отзывов.</p>
+        </section>
+
+        <section id="contact-section">
+            <h2>Контакты</h2>
+            <p>Содержимое секции контактов.</p>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>Контактная информация: admin@boguchan.com | +7 (800) 555-35-35</p>
+    </footer>
+
+    <div class="card-popup" id="card-popup">
+        <img src="https://i.imgur.com/5wBt1VB.png" alt="Дебетовая карта">
+        <a href="#" class="card-btn">Оформить карту</a>
+    </div>
+
+    <script>
+        document.addEventListener("scroll", function() {
+            let scrollTop = window.scrollY;
+            document.querySelectorAll(".bubble").forEach(bubble => {
+                let scale = 1 + (scrollTop / 1000);
+                bubble.style.transform = `scale(${scale})`;
+            });
+        });
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (sectionId === 'reviews-section') {
+                    setTimeout(() => {
+                        showCardPopup();
+                    }, 1000); // Задержка для корректного отображения карты
+                }
+            }
+        }
+
+        function showCardPopup() {
+            let cardPopup = document.getElementById("card-popup");
+            cardPopup.style.opacity = "1";
+            cardPopup.style.transform = "translate(-50%, -50%) scale(1)";
+        }
+
+          let lastScrollTop = 0;
+    const header = document.querySelector(".header");
+    let isHidden = false;
+
+    // Закрепляем шапку вверху экрана
+    header.style.position = "fixed";
+    header.style.top = "0";
+    header.style.left = "0";
+    header.style.width = "100%";
+    header.style.zIndex = "1000";
+
+        window.addEventListener("scroll", function() {
+        let scrollTop = window.scrollY;
+
+        if (scrollTop > lastScrollTop && !isHidden) {
+            // Прокрутка вниз — скрываем шапку
+            header.style.transform = "translateY(-100%)";
+            header.style.transition = "transform 0.3s ease-in-out";
+            isHidden = true;
+        } else if (scrollTop < lastScrollTop && isHidden) {
+            // Прокрутка вверх — показываем шапку
+            header.style.transform = "translateY(0)";
+            isHidden = false;
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Учитываем верх страницы
+    });
+
+    </script>
+</body>
+</html>

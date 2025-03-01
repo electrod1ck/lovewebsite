@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script src="phone-formatter.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Object Sans, sans-serif;
+            background-color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(240, 240, 240, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            font-family: Object Sans, sans-serif;
+            background-color: red;
+            color: white;
+            padding: 8px 20px;
+            border: 2px solid red;
+            border-radius: 20px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background-color: transparent;
+            color: black;
+        }
+
+        .logo img {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: red;
+            text-decoration: none;
+            display: block;
+            margin-top: 15px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+            animation: bubbleAnimation infinite alternate ease-in-out;
+        }
+
+        @keyframes bubbleAnimation {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.3); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubbles-container"></div>
+    <div class="login-container">
+        <div class="logo">
+            <img src="https://i.imgur.com/kuqVaUU.png" alt="Логотип">
+        </div>
+        <h2>Регистрация</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Номер телефона:</label>
+                <input type="text" id="username" name="username" placeholder="+7 (___) ___-__-__" maxlength="18" required oninput="formatPhoneNumber(this)">
+            </div>
+            <div class="form-group">
+                <label for="username">Серия и номер паспорта:</label>
+                <input type="text" name="passport_combined" id="passport_combined" maxlength="11" oninput="formatPassport(this)">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div><br>
+            <div class="form-group">
+                <label for="secretword">Кодовое слово:</label>
+                <input type="text" id="secretword" name="secretword" required>
+            </div>
+            <button type="submit" class="login-btn">Создать аккаунт</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.querySelector(".bubbles-container");
+            const numBubbles = 20;
+
+            for (let i = 0; i < numBubbles; i++) {
+                const bubble = document.createElement("div");
+                bubble.classList.add("bubble");
+                const size = Math.random() * 100 + 50;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDuration = `${Math.random() * 3 + 3}s`;
+                container.appendChild(bubble);
+            }
+        });
+    </script>
+</body>
+</html>
